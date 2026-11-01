@@ -2,10 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { ProblemDetails } from './api.models';
 
-/**
- * Normalised error every HTTP failure is turned into by the error interceptor,
- * so components never have to dig through HttpErrorResponse / ProblemDetails themselves.
- */
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -22,7 +19,6 @@ export class ApiError extends Error {
     return this.status === 400 && Object.keys(this.fieldErrors).length > 0;
   }
 
-  /** All field messages flattened — handy for a single summary line. */
   get fieldMessages(): string[] {
     return Object.values(this.fieldErrors).flat();
   }

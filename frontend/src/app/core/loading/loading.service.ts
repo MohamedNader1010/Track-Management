@@ -1,6 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-/** Counts in-flight requests; the loader is visible while at least one is pending. */
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
   private readonly pending = signal(0);

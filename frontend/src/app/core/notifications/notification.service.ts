@@ -25,7 +25,6 @@ export class NotificationService {
   }
 
   error(message: string, details: string[] = []): void {
-    // Avoid stacking the same message when several requests fail together (e.g. API down).
     if (this._toasts().some((t) => t.kind === 'error' && t.message === message)) {
       return;
     }

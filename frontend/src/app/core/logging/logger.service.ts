@@ -8,10 +8,6 @@ export enum LogLevel {
   Off = 4,
 }
 
-/**
- * Single entry point for client-side logging. Verbose in dev, warnings+ in production builds.
- * Swap `write` for a remote sink (App Insights, Sentry...) without touching callers.
- */
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
   private readonly minLevel = isDevMode() ? LogLevel.Debug : LogLevel.Warn;

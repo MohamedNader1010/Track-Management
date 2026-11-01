@@ -2,13 +2,6 @@ import { Directive, TemplateRef, ViewContainerRef, effect, inject, input } from 
 
 import { AuthService } from '../../core/auth/auth.service';
 
-/**
- * Structural directive: renders its content only for signed-in users that have the given role.
- * Reacts to sign-in / sign-out automatically because it reads the auth signals inside an effect.
- *
- *   <section *appIfRole="'catalog-manager'">…</section>
- *   <span *appIfRole="'catalog-manager'; else readOnly">…</span>
- */
 @Directive({ selector: '[appIfRole]' })
 export class IfRoleDirective {
   private readonly auth = inject(AuthService);
@@ -20,7 +13,7 @@ export class IfRoleDirective {
 
   constructor() {
     effect(() => {
-      this.auth.currentUser(); // track session changes
+      this.auth.currentUser();
       const allowed = this.auth.hasRole(this.appIfRole());
       const fallback = this.appIfRoleElse();
 

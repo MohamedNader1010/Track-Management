@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
 
-import { guestOnlyGuard } from './core/auth/auth.guard';
+import { guestOnlyGuard, roleGuard } from './core/auth/auth.guard';
 
-// Every feature is lazy-loaded as a standalone component — no NgModules anywhere.
+const CATALOG_MANAGER = 'catalog-manager';
+
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'tracks' },
   {
@@ -11,9 +12,26 @@ export const routes: Routes = [
     loadComponent: () => import('./features/tracks/track-list/track-list').then((m) => m.TrackList),
   },
   {
+    path: 'tracks/new',
+    title: 'New track · Takwene',
+    canActivate: [roleGuard(CATALOG_MANAGER)],
+    loadComponent: () => import('./features/tracks/track-create/track-create').then((m) => m.TrackCreate),
+  },
+  {
     path: 'tracks/:id',
     title: 'Track details · Takwene',
     loadComponent: () => import('./features/tracks/track-detail/track-detail').then((m) => m.TrackDetail),
+  },
+  {
+    path: 'artists',
+    title: 'Artists · Takwene',
+    loadComponent: () => import('./features/artists/artist-list').then((m) => m.ArtistList),
+  },
+  {
+    path: 'artists/new',
+    title: 'New artist · Takwene',
+    canActivate: [roleGuard(CATALOG_MANAGER)],
+    loadComponent: () => import('./features/artists/artist-create').then((m) => m.ArtistCreate),
   },
   {
     path: 'login',

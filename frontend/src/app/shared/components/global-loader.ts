@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 
 import { LoadingService } from '../../core/loading/loading.service';
 
-/** Thin progress bar at the top of the page while any HTTP request is in flight. */
 @Component({
   selector: 'app-global-loader',
   template: `

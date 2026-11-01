@@ -22,7 +22,6 @@ export class TrackDetail {
   private readonly api = inject(TracksApi);
   private readonly notifications = inject(NotificationService);
 
-  /** Route param :id, bound via withComponentInputBinding(). */
   readonly id = input.required<string>();
 
   protected readonly track = httpResource<TrackDetails>(() => `/api/tracks/${this.id()}`);
@@ -31,7 +30,6 @@ export class TrackDetail {
   protected readonly selectedDspIds = signal<ReadonlySet<string>>(new Set());
   protected readonly busy = signal(false);
 
-  /** DSPs the track can still be sent to: never sent, or previously rejected. */
   protected readonly availableDsps = computed(() => {
     const blocked = new Set(
       (this.track.hasValue() ? this.track.value().distributions : [])
@@ -75,12 +73,10 @@ export class TrackDetail {
     this.busy.set(true);
     request.pipe(finalize(() => this.busy.set(false))).subscribe({
       next: (updated) => {
-        // The API returns the updated aggregate — no need for a second GET.
         this.track.set(updated);
         onSuccess?.();
         this.notifications.success(successMessage);
       },
-      // Already toasted by the error interceptor; only state-specific handling here.
       error: (error: ApiError) => {
         if (error.status === 409) {
           this.track.reload();

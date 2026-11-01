@@ -4,10 +4,6 @@ import { ApiError } from '../api/api-error';
 import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
 
-/**
- * Catches anything that escapes component code (template errors, unhandled promise rejections...).
- * HTTP failures were already reported by the error interceptor, so they are only logged here.
- */
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   private readonly logger = inject(LoggerService);
@@ -27,7 +23,6 @@ export class GlobalErrorHandler implements ErrorHandler {
 }
 
 function unwrap(error: unknown): unknown {
-  // Promise rejections arrive wrapped as { rejection }.
   if (typeof error === 'object' && error !== null && 'rejection' in error) {
     return (error as { rejection: unknown }).rejection;
   }

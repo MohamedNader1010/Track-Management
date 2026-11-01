@@ -11,10 +11,6 @@ const TONES: Record<string, Tone> = {
   rejected: 'danger',
 };
 
-/**
- * Attribute directive that turns any element into a status pill coloured by the status value.
- *   <span [appStatusTone]="track.status">{{ track.status }}</span>
- */
 @Directive({
   selector: '[appStatusTone]',
   host: {

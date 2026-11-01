@@ -9,14 +9,7 @@ import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
 import { SKIP_ERROR_TOAST, SKIP_LOADER } from './http-context.tokens';
 
-/*
- * Functional interceptors, registered in app.config.ts in this order:
- *   logging → loading → auth → error
- * Requests flow top-to-bottom, responses bottom-to-top, so the error interceptor sees raw HTTP errors first
- * and the logging interceptor measures the full round-trip including the others.
- */
 
-/** Logs method, URL, status and duration of every call. */
 export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
   const logger = inject(LoggerService);
   const startedAt = performance.now();
@@ -37,7 +30,6 @@ export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 
-/** Drives the global loader. Opt out per request with the SKIP_LOADER context token. */
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.context.get(SKIP_LOADER)) {
     return next(req);
@@ -48,7 +40,6 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(finalize(() => loading.end()));
 };
 
-/** Attaches the bearer token — only to our own API, never to third-party URLs. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = inject(AuthService).token();
   const isApiCall = req.url.startsWith('/api/');
@@ -60,10 +51,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }));
 };
 
-/**
- * Turns every HTTP failure into an ApiError, shows a toast (unless SKIP_ERROR_TOAST) and handles
- * an expired/invalid session centrally.
- */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notifications = inject(NotificationService);
   const auth = inject(AuthService);

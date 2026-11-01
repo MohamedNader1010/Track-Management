@@ -3,7 +3,6 @@ import { Directive, inject, input } from '@angular/core';
 import { LoggerService } from '../../core/logging/logger.service';
 import { NotificationService } from '../../core/notifications/notification.service';
 
-/** Click (or Enter) to copy a value — used for ISRCs, which people paste into DSP portals all day. */
 @Directive({
   selector: '[appCopyToClipboard]',
   host: {

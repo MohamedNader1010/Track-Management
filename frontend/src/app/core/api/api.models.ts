@@ -1,9 +1,39 @@
-// Mirrors the API contracts (TrackManagement.Application.*Response records).
+
 
 export type TrackStatus = 'draft' | 'submitted' | 'distributed';
 export type DistributionStatus = 'pending' | 'live' | 'rejected';
 
 export const TRACK_STATUSES: readonly TrackStatus[] = ['draft', 'submitted', 'distributed'];
+
+export const GENRES: readonly string[] = [
+  'Arabic Pop',
+  'Khaleeji',
+  'Mahraganat',
+  'Rai',
+  'Tarab',
+  'Pop',
+  'Hip-Hop',
+  'R&B',
+  'Rock',
+  'Electronic',
+  'Jazz',
+  'Classical',
+  'Indie',
+];
+
+export interface CreateArtistRequest {
+  name: string;
+  email: string;
+  country: string;
+}
+
+export interface CreateTrackRequest {
+  title: string;
+  artistId: string;
+  isrc: string;
+  releaseDate: string; // yyyy-MM-dd
+  genre: string;
+}
 
 export interface PagedResponse<T> {
   items: T[];
@@ -67,7 +97,6 @@ export interface TokenResponse {
   expiresAtUtc: string;
 }
 
-/** RFC 9457 problem details as returned by the API (ValidationProblemDetails adds `errors`). */
 export interface ProblemDetails {
   type?: string;
   title?: string;

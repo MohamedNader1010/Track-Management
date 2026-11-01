@@ -11,16 +11,10 @@ export interface Session {
   token: string;
   username: string;
   roles: string[];
-  expiresAt: number; // epoch ms
+  expiresAt: number;
 }
 
 const STORAGE_KEY = 'takwene.session';
-
-/**
- * Holds the current session as a signal. The token is kept in sessionStorage (cleared when the tab closes)
- * rather than localStorage to shorten its lifetime if the page is ever compromised by XSS.
- * The roles read from the token are for UX only — the API enforces authorization on every call.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -58,7 +52,7 @@ export class AuthService {
     sessionStorage.removeItem(STORAGE_KEY);
   }
 
-  /** Called on 401: drop the session and send the user to the login page, coming back afterwards. */
+
   expireAndRedirect(): void {
     const returnUrl = this.router.url;
     this.logout('token rejected by API');
