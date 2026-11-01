@@ -22,16 +22,34 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 
+  // The logo file is white on transparent. Invert it to black on the light theme; keep it white on dark.
   .logo {
-    color: var(--accent);
-    font-size: 20px;
+    height: 28px;
+    width: auto;
+    display: block;
+    filter: invert(1);
+  }
+
+  .product {
+    padding-left: 10px;
+    border-left: 1px solid var(--border);
+    color: var(--muted);
+    font-weight: 600;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand .logo {
+    filter: none;
   }
 }
 
 nav {
   flex: 1;
+  display: flex;
+  gap: 20px;
 
   a {
     color: var(--muted);
