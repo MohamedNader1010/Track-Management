@@ -1,0 +1,34 @@
+<app-global-loader />
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/tracks" class="brand">
+      <span class="logo" aria-hidden="true">◐</span>
+      Takwene <span class="muted">Tracks</span>
+    </a>
+
+    <nav>
+      <a routerLink="/tracks" routerLinkActive="active">Catalogue</a>
+    </nav>
+
+    <div class="session">
+      @if (auth.currentUser(); as user) {
+        <span class="user">
+          {{ user.username }}
+          @for (role of user.roles; track role) {
+            <small class="role">{{ role }}</small>
+          }
+        </span>
+        <button type="button" class="btn ghost" (click)="logout()">Sign out</button>
+      } @else {
+        <a routerLink="/login" class="btn ghost">Sign in</a>
+      }
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>
+
+<app-toast-outlet />
