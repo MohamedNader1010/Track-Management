@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <!-- Contracts only (INotification) so domain events can be published without pulling in MediatR itself. -->
+    <PackageReference Include="MediatR.Contracts" />
+    <PackageReference Include="ErrorOr" />
+    <PackageReference Include="Ardalis.SmartEnum" />
+  </ItemGroup>
+
+</Project>
