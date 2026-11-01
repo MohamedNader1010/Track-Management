@@ -1,0 +1,67 @@
+@baseUrl = http://localhost:5080
+
+### 1) Get a token (manager has the catalog-manager role)
+# @name login
+POST {{baseUrl}}/api/auth/token
+Content-Type: application/json
+
+{ "username": "manager", "password": "Takwene@2026" }
+
+###
+@token = {{login.response.body.accessToken}}
+
+### Who am I?
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### List artists (anonymous)
+GET {{baseUrl}}/api/artists
+
+### Create artist (JWT)
+POST {{baseUrl}}/api/artists
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "Hana Mostafa", "email": "hana.mostafa@example.com", "country": "EG" }
+
+### List DSPs
+GET {{baseUrl}}/api/dsps
+
+### List tracks with filters
+GET {{baseUrl}}/api/tracks?status=distributed&genre=mahraganat&page=1&pageSize=20
+
+### Validation error example (400)
+GET {{baseUrl}}/api/tracks?status=published
+
+### Track details — replace the id
+GET {{baseUrl}}/api/tracks/00000000-0000-0000-0000-000000000000
+
+### Create track (JWT) — replace artistId
+POST {{baseUrl}}/api/tracks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Masr El Gedida",
+  "artistId": "00000000-0000-0000-0000-000000000000",
+  "isrc": "EG-TKW-26-00042",
+  "releaseDate": "2026-12-01",
+  "genre": "Arabic Pop"
+}
+
+### Distribute (JWT) — replace ids
+POST {{baseUrl}}/api/tracks/00000000-0000-0000-0000-000000000000/distribute
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "dspIds": [ "00000000-0000-0000-0000-000000000000" ] }
+
+### Update status (JWT)
+PATCH {{baseUrl}}/api/tracks/00000000-0000-0000-0000-000000000000/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "status": "distributed" }
+
+### Health
+GET {{baseUrl}}/health
