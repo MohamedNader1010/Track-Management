@@ -1,0 +1,99 @@
+<a routerLink="/tracks" class="back">‹ All tracks</a>
+
+@if (track.error(); as error) {
+  <div class="card empty">
+    <h2>{{ $any(error).status === 404 ? 'Track not found' : 'Could not load this track' }}</h2>
+    <p class="muted">{{ error.message }}</p>
+    <a routerLink="/tracks" class="btn">Back to tracks</a>
+  </div>
+} @else if (track.hasValue()) {
+  @let t = track.value();
+
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">{{ t.genre }}</p>
+      <h1>{{ t.title }}</h1>
+      <p class="muted">by <strong>{{ t.artist.name }}</strong> · {{ t.artist.country }}</p>
+    </div>
+    <span [appStatusTone]="t.status" class="big">{{ t.status }}</span>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Details</h2>
+      <dl class="facts">
+        <dt>ISRC</dt>
+        <dd class="mono"><span [appCopyToClipboard]="t.isrc">{{ t.isrc }}</span></dd>
+        <dt>Release date</dt>
+        <dd>{{ t.releaseDate | date: 'longDate' }}</dd>
+        <dt>Genre</dt>
+        <dd>{{ t.genre }}</dd>
+        <dt>Live on</dt>
+        <dd>{{ liveCount() }} of {{ t.distributions.length }} DSP(s)</dd>
+        <dt>Created</dt>
+        <dd>{{ t.createdAtUtc | date: 'medium' }}</dd>
+        <dt>Last updated</dt>
+        <dd>{{ t.updatedAtUtc | date: 'medium' }}</dd>
+      </dl>
+    </section>
+
+    <section class="card">
+      <h2>Distribution</h2>
+      @if (t.distributions.length === 0) {
+        <p class="muted">Not submitted to any DSP yet.</p>
+      } @else {
+        <ul class="dsp-list">
+          @for (d of t.distributions; track d.id) {
+            <li>
+              <div>
+                <strong>{{ d.dspName }}</strong>
+                <small class="muted">submitted {{ d.submittedAtUtc | date: 'mediumDate' }}</small>
+              </div>
+              <span [appStatusTone]="d.status">{{ d.status }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  <section class="card actions" *appIfRole="'catalog-manager'; else readOnly">
+    <h2>Manage</h2>
+
+    <div class="action-row">
+      <span class="label">Move to</span>
+      @for (next of t.allowedStatusTransitions; track next) {
+        <button type="button" class="btn" [disabled]="busy()" (click)="changeStatus(next)">{{ next }}</button>
+      } @empty {
+        <span class="muted">"{{ t.status }}" is a final state.</span>
+      }
+    </div>
+
+    <div class="action-row">
+      <span class="label">Distribute to</span>
+      @for (dsp of availableDsps(); track dsp.id) {
+        <label class="check">
+          <input
+            type="checkbox"
+            [checked]="selectedDspIds().has(dsp.id)"
+            (change)="toggleDsp(dsp.id, $any($event.target).checked)"
+          />
+          {{ dsp.name }}
+        </label>
+      } @empty {
+        <span class="muted">Already on every DSP.</span>
+      }
+      @if (availableDsps().length) {
+        <button type="button" class="btn primary" [disabled]="busy() || selectedDspIds().size === 0" (click)="distribute()">
+          Submit
+        </button>
+      }
+    </div>
+  </section>
+
+  <ng-template #readOnly>
+    <p class="muted hint"><a routerLink="/login">Sign in</a> as a catalog manager to change status or distribute this track.</p>
+  </ng-template>
+} @else {
+  <div class="card" aria-busy="true"><p class="muted">Loading track…</p></div>
+}

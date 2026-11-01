@@ -1,0 +1,98 @@
+<header class="page-head">
+  <div>
+    <h1>Tracks</h1>
+    <p class="muted">
+      @if (loadedPage(); as p) {
+        {{ p.totalCount }} track{{ p.totalCount === 1 ? '' : 's' }}
+      } @else {
+        Catalogue
+      }
+    </p>
+  </div>
+
+  <form class="filters" (submit)="$event.preventDefault()">
+    <label>
+      <span>Status</span>
+      <select #statusSelect (change)="applyFilter({ status: statusSelect.value })">
+        <option value="">All statuses</option>
+        @for (s of statuses; track s) {
+          <option [value]="s" [selected]="s === status()">{{ s }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>Artist</span>
+      <select #artistSelect (change)="applyFilter({ artistId: artistSelect.value })">
+        <option value="">All artists</option>
+        @for (artist of artists.value(); track artist.id) {
+          <option [value]="artist.id" [selected]="artist.id === artistId()">{{ artist.name }}</option>
+        }
+      </select>
+    </label>
+
+    @if (hasFilters()) {
+      <button type="button" class="btn ghost" (click)="clearFilters()">Clear</button>
+    }
+  </form>
+</header>
+
+@if (tracks.error()) {
+  <div class="card empty">
+    <p>Couldn't load tracks.</p>
+    <button type="button" class="btn" (click)="tracks.reload()">Try again</button>
+  </div>
+} @else if (loadedPage(); as result) {
+
+  @if (result.items.length === 0) {
+    <div class="card empty">
+      <p>No tracks match these filters.</p>
+      <button type="button" class="btn ghost" (click)="clearFilters()">Clear filters</button>
+    </div>
+  } @else {
+    <div class="card table-wrap" [class.stale]="tracks.isLoading()">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Genre</th>
+            <th>Release</th>
+            <th>ISRC</th>
+            <th>DSPs</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (track of result.items; track track.id) {
+            <tr>
+              <td class="title-cell">
+                <a [routerLink]="['/tracks', track.id]">{{ track.title }}</a>
+              </td>
+              <td>{{ track.artistName }}</td>
+              <td>{{ track.genre }}</td>
+              <td class="nowrap">{{ track.releaseDate | date: 'mediumDate' }}</td>
+              <td class="mono nowrap"><span [appCopyToClipboard]="track.isrc">{{ track.isrc }}</span></td>
+              <td>{{ track.distributionCount }}</td>
+              <td><span [appStatusTone]="track.status">{{ track.status }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (result.totalPages > 1) {
+      <nav class="pager" aria-label="Pagination">
+        <button type="button" class="btn ghost" [disabled]="result.page <= 1" (click)="goToPage(result.page - 1)">‹ Prev</button>
+        <span class="muted">Page {{ result.page }} of {{ result.totalPages }}</span>
+        <button type="button" class="btn ghost" [disabled]="!result.hasNextPage" (click)="goToPage(result.page + 1)">Next ›</button>
+      </nav>
+    }
+  }
+} @else {
+  <div class="card skeleton" aria-busy="true">
+    @for (row of [1, 2, 3, 4, 5]; track row) {
+      <div class="skeleton-row"></div>
+    }
+  </div>
+}
