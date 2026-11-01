@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/TrackManagement.Domain/TrackManagement.Domain.csproj" />
+    <Project Path="src/TrackManagement.Application/TrackManagement.Application.csproj" />
+    <Project Path="src/TrackManagement.Infrastructure/TrackManagement.Infrastructure.csproj" />
+    <Project Path="src/TrackManagement.Api/TrackManagement.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TrackManagement.Domain.UnitTests/TrackManagement.Domain.UnitTests.csproj" />
+    <Project Path="tests/TrackManagement.Application.UnitTests/TrackManagement.Application.UnitTests.csproj" />
+    <Project Path="tests/TrackManagement.Api.IntegrationTests/TrackManagement.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
